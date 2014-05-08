@@ -1,9 +1,13 @@
 var express = require("express");
 var sys = require("sys");
+// need to include middleware separately w/ express these days.
+var middi = require("body-parser")
 
-var app = express()
+var app = express();
+
 
 app.listen(8080)
+app.use(middi())
 
 sys.puts("Server listen on port:8080")
 
@@ -25,20 +29,20 @@ app.get('/', function(request, response){
                       'header': header,
                       'tweets': tweets,
                       'stylesheet': ['/style.css']
-                  } 
+                  }
             })
 })
 
 app.get('/tweets', function(request, response){
- 
+
        response.send( tweets )
 })
 
-app.post('/send', express.bodyParser(), function(request, response){
+app.post('/send', function(request, response){
 
         if(request.body && request.body.tweet) {
 
-          tweets.push(request.body.tweet)  
+          tweets.push(request.body.tweet)
 
            if(acceptsHTML(request.headers['accept']) ) {
 
@@ -46,14 +50,14 @@ app.post('/send', express.bodyParser(), function(request, response){
 
            } else {
 
-             response.send({"status":"Ok","message": "Tweet received"})  
+             response.send({"status":"Ok","message": "Tweet received"})
            }
 
         } else {
 
-          response.send({"status":"nok","message": "No Tweet received"})  
+          response.send({"status":"nok","message": "No Tweet received"})
         }
- 
+
 })
 
 
@@ -64,7 +68,7 @@ function acceptsHTML( header ) {
     for(var i=0,j=accepts.length; i<j; i++) {
 
         if(accepts[i] == 'text/html') return true;
-    } 
+    }
 
   return false;
 }
